@@ -2,6 +2,10 @@
 
 A lightweight static HTML showcase for ambient aura effects in modern product interfaces.
 
+## Live site
+
+**Open the live demo:** [https://garikaijenje.github.io/aura-glow](https://garikaijenje.github.io/aura-glow)
+
 ![Aura Glow preview](./preview.png)
 
 ## Overview
