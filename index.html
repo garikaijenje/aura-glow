@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Glow Showcase</title>
+    <title>Aura Glow | Ambient UI Effects for AI Apps</title>
+    <meta name="description" content="Aura Glow is a lightweight static HTML showcase for ambient aura effects, polished UI motion, and shareable interface previews for AI apps.">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="color-scheme" content="dark light">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Aura Glow | Ambient UI Effects for AI Apps">
+    <meta property="og:description" content="A lightweight static HTML showcase for ambient aura effects, polished UI motion, and shareable previews for AI app interfaces.">
+    <meta property="og:image" content="./preview.png">
+    <meta property="og:image:alt" content="Aura Glow interface preview with animated ambient UI controls">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aura Glow | Ambient UI Effects for AI Apps">
+    <meta name="twitter:description" content="A lightweight static HTML showcase for ambient aura effects, polished UI motion, and shareable previews for AI app interfaces.">
+    <meta name="twitter:image" content="./preview.png">
+    <link rel="icon" type="image/png" href="./preview.png">
+    <link rel="apple-touch-icon" href="./preview.png">
     <style>
         :root {
             /* Colors */
@@ -167,6 +181,20 @@
             color: var(--text-color);
         }
 
+        .hero-copy {
+            margin-top: 10px;
+            max-width: 280px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--secondary-text);
+            letter-spacing: 0.2px;
+        }
+
+        .hero-copy strong {
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
         .section-label {
             font-size: 10px;
             font-weight: 800;
@@ -229,6 +257,7 @@
         .slider-value { color: var(--accent-color); }
 
         input[type="range"] {
+            appearance: none;
             -webkit-appearance: none;
             width: 100%;
             height: 4px;
@@ -275,6 +304,7 @@
             <div>
                
                 <h1>Aura Glow</h1>
+                <div class="hero-copy"><strong>For Your AI Apps UI</strong> with ambient motion, subtle depth, and an instantly shareable static preview.</div>
             </div>
             <div class="theme-container" onclick="toggleTheme()">
                 <span id="theme-text">Light Mode</span>
