@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Glow Showcase</title>
+    <style>
+        :root {
+            /* Colors */
+            --bg-color: #0a0a0c;
+            --text-color: #ffffff;
+            --secondary-text: #888;
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-border: rgba(255, 255, 255, 0.1);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-active-bg: #ffffff;
+            --btn-active-text: #000000;
+            --accent-color: #2ed573;
+
+            /* Mixed Aura Palette */
+            --mix-blue: rgba(0, 102, 255, 0.4);
+            --mix-purple: rgba(160, 32, 240, 0.4);
+            --mix-cyan: rgba(0, 212, 255, 0.4);
+            --mix-indigo: rgba(75, 0, 130, 0.4);
+            
+            /* blue Palette */
+            --blue-glow: rgba(0, 102, 255, 0.6);
+            
+            /* Pink Action Palette */
+            --pink-glow: rgba(236, 72, 153, 0.6);
+            
+            /* Dynamic Controls Defaults */
+            --glow-blur: 40px;
+            --glow-spread: -5px;
+            --glow-speed: 8s;
+            --blue-speed: 4s;
+            --pink-speed: 3s;
+        }
+
+        .light-theme {
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1e;
+            --secondary-text: #555;
+            --panel-bg: rgba(0, 0, 0, 0.03);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --btn-bg: rgba(0, 0, 0, 0.05);
+            --btn-active-bg: #1a1a1e;
+            --btn-active-text: #ffffff;
+            --accent-color: #00a854;
+
+            --mix-blue: rgba(0, 102, 255, 0.2);
+            --mix-purple: rgba(160, 32, 240, 0.2);
+            --mix-cyan: rgba(0, 212, 255, 0.2);
+            --mix-indigo: rgba(75, 0, 130, 0.2);
+            --blue-glow: rgba(0, 102, 255, 0.25);
+            --pink-glow: rgba(236, 72, 153, 0.25);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- GLOW OVERLAYS --- */
+
+        .glow-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .mode-gradient { animation: rotating-aura var(--glow-speed) linear infinite; }
+        .mode-blue { animation: breathe-blue var(--blue-speed) ease-in-out infinite; }
+        .mode-pink { animation: breathe-pink var(--pink-speed) ease-in-out infinite; }
+
+        @keyframes rotating-aura {
+            0% {
+                box-shadow: 
+                    inset 20px 20px var(--glow-blur) var(--glow-spread) var(--mix-blue),
+                    inset -20px 20px var(--glow-blur) var(--glow-spread) var(--mix-purple),
+                    inset -20px -20px var(--glow-blur) var(--glow-spread) var(--mix-cyan),
+                    inset 20px -20px var(--glow-blur) var(--glow-spread) var(--mix-indigo);
+            }
+            50% {
+                box-shadow: 
+                    inset -20px -20px var(--glow-blur) var(--glow-spread) var(--mix-cyan),
+                    inset 20px -20px var(--glow-blur) var(--glow-spread) var(--mix-indigo),
+                    inset 20px 20px var(--glow-blur) var(--glow-spread) var(--mix-blue),
+                    inset -20px 20px var(--glow-blur) var(--glow-spread) var(--mix-purple);
+            }
+            100% {
+                box-shadow: 
+                    inset 20px 20px var(--glow-blur) var(--glow-spread) var(--mix-blue),
+                    inset -20px 20px var(--glow-blur) var(--glow-spread) var(--mix-purple),
+                    inset -20px -20px var(--glow-blur) var(--glow-spread) var(--mix-cyan),
+                    inset 20px -20px var(--glow-blur) var(--glow-spread) var(--mix-indigo);
+            }
+        }
+
+        @keyframes breathe-blue {
+            0%, 100% { box-shadow: inset 0 0 var(--glow-blur) 0px var(--blue-glow); }
+            50% { box-shadow: inset 0 0 calc(var(--glow-blur) * 1.5) calc(var(--glow-blur) * 0.4) var(--blue-glow); }
+        }
+
+        @keyframes breathe-pink {
+            0%, 100% { box-shadow: inset 0 0 var(--glow-blur) 0px var(--pink-glow); }
+            50% { box-shadow: inset 0 0 calc(var(--glow-blur) * 1.5) calc(var(--glow-blur) * 0.4) var(--pink-glow); }
+        }
+
+        /* --- UI ELEMENTS --- */
+
+        .controls {
+            position: relative;
+            z-index: 10;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border: 1px solid var(--panel-border);
+            text-align: left;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .theme-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            padding: 4px 8px;
+            background: var(--panel-border);
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .theme-container:hover { opacity: 1; }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--text-color);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--secondary-text);
+            margin-bottom: 12px;
+            margin-top: 24px;
+            display: block;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            padding: 10px;
+            border: 1px solid var(--panel-border);
+            background: var(--btn-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        button:hover { background: rgba(255, 255, 255, 0.08); }
+        .light-theme button:hover { background: rgba(0, 0, 0, 0.08); }
+
+        button.active {
+            background: var(--btn-active-bg);
+            color: var(--btn-active-text);
+            border-color: var(--btn-active-bg);
+        }
+
+        /* --- SLIDERS --- */
+
+        .slider-container {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .slider-value { color: var(--accent-color); }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--panel-border);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--text-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(46, 213, 115, 0.1);
+            color: var(--accent-color);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="glow" class="glow-overlay mode-gradient"></div>
+
+    <div class="controls">
+        <div class="header-row">
+            <div>
+               
+                <h1>Aura Glow</h1>
+            </div>
+            <div class="theme-container" onclick="toggleTheme()">
+                <span id="theme-text">Light Mode</span>
+            </div>
+        </div>
+
+        <span class="section-label">Aura Selection</span>
+        <div class="button-group">
+            <button id="btn-gradient" class="active" onclick="setMode('gradient')">Mixed Aura</button>
+            <button id="btn-blue" onclick="setMode('blue')">Blue Aura</button>
+            <button id="btn-pink" onclick="setMode('pink')">Pink Aura</button>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-item">
+                <div class="slider-header">
+                    <span>Intensity / Size</span>
+                    <span class="slider-value" id="size-val">40px</span>
+                </div>
+                <input type="range" id="size-slider" min="10" max="150" value="40" oninput="updateSize(this.value)">
+            </div>
+
+            <div class="slider-item">
+                <div class="slider-header">
+                    <span>Animation Speed</span>
+                    <span class="slider-value" id="speed-val">8s</span>
+                </div>
+                <input type="range" id="speed-slider" min="1" max="15" value="8" step="0.5" oninput="updateSpeed(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const root = document.documentElement;
+        let currentMode = 'gradient';
+        let isLight = false;
+
+        function setMode(mode) {
+            const glow = document.getElementById('glow');
+            const btns = document.querySelectorAll('.button-group button');
+            
+            glow.className = 'glow-overlay mode-' + mode;
+            
+            btns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.id === 'btn-' + mode) {
+                    btn.classList.add('active');
+                }
+            });
+            currentMode = mode;
+        }
+
+        function updateSize(val) {
+            root.style.setProperty('--glow-blur', val + 'px');
+            document.getElementById('size-val').innerText = val + 'px';
+        }
+
+        function updateSpeed(val) {
+            // Speed for gradient is direct, breathe effects scaled
+            root.style.setProperty('--glow-speed', val + 's');
+            root.style.setProperty('--blue-speed', (val / 2) + 's');
+            root.style.setProperty('--pink-speed', (val / 2.5) + 's');
+            document.getElementById('speed-val').innerText = val + 's';
+        }
+
+        function toggleTheme() {
+            isLight = !isLight;
+            document.body.classList.toggle('light-theme');
+            const themeText = document.getElementById('theme-text');
+            themeText.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+        }
+    </script>
+</body>
+</html>
