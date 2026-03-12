@@ -51,30 +51,30 @@
             --pink-speed: 3s;
         }
 
-        .light-theme {
-            --bg-color: #f8f9fa;
-            --text-color: #1a1a1e;
-            --secondary-text: #555;
-            --panel-bg: rgba(0, 0, 0, 0.03);
-            --panel-border: rgba(0, 0, 0, 0.08);
-            --btn-bg: rgba(0, 0, 0, 0.05);
+        html.light-theme {
+            --bg-color: #f3f4f6;
+            --text-color: #16181d;
+            --secondary-text: #5f6673;
+            --panel-bg: rgba(255, 255, 255, 0.82);
+            --panel-border: rgba(17, 24, 39, 0.08);
+            --btn-bg: rgba(17, 24, 39, 0.04);
             --btn-active-bg: #1a1a1e;
             --btn-active-text: #ffffff;
             --accent-color: #00a854;
 
-            --mix-blue: rgba(0, 102, 255, 0.2);
-            --mix-purple: rgba(160, 32, 240, 0.2);
-            --mix-cyan: rgba(0, 212, 255, 0.2);
-            --mix-indigo: rgba(75, 0, 130, 0.2);
-            --blue-glow: rgba(0, 102, 255, 0.25);
-            --pink-glow: rgba(236, 72, 153, 0.25);
+            --mix-blue: rgba(59, 130, 246, 0.14);
+            --mix-purple: rgba(168, 85, 247, 0.12);
+            --mix-cyan: rgba(34, 211, 238, 0.12);
+            --mix-indigo: rgba(99, 102, 241, 0.12);
+            --blue-glow: rgba(59, 130, 246, 0.14);
+            --pink-glow: rgba(236, 72, 153, 0.12);
         }
 
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100%;
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Inter', -apple-system, sans-serif;
@@ -146,7 +146,12 @@
             text-align: left;
             width: 100%;
             max-width: 440px;
+            box-sizing: border-box;
             box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+        }
+
+        html.light-theme .controls {
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
         }
 
         .header-row {
@@ -172,6 +177,14 @@
         }
 
         .theme-container:hover { opacity: 1; }
+        html.light-theme .theme-container { color: var(--text-color); }
+
+        .theme-container:focus-visible,
+        button:focus-visible,
+        input[type="range"]:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
 
         h1 {
             margin: 0;
@@ -293,11 +306,70 @@
             height: 6px;
             background: var(--accent-color);
         }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 640px) {
+            .controls {
+                max-width: calc(100vw - 32px);
+                padding: 24px;
+            }
+
+            .header-row {
+                gap: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mode-gradient,
+            .mode-blue,
+            .mode-pink {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+
+            .theme-container,
+            button,
+            body,
+            html {
+                transition: none;
+            }
+
+            .mode-gradient {
+                box-shadow:
+                    inset 20px 20px var(--glow-blur) var(--glow-spread) var(--mix-blue),
+                    inset -20px 20px var(--glow-blur) var(--glow-spread) var(--mix-purple),
+                    inset -20px -20px var(--glow-blur) var(--glow-spread) var(--mix-cyan),
+                    inset 20px -20px var(--glow-blur) var(--glow-spread) var(--mix-indigo);
+            }
+
+            .mode-blue {
+                box-shadow: inset 0 0 var(--glow-blur) 0 var(--blue-glow);
+            }
+
+            .mode-pink {
+                box-shadow: inset 0 0 var(--glow-blur) 0 var(--pink-glow);
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="glow" class="glow-overlay mode-gradient"></div>
+    <div id="glow" class="glow-overlay mode-gradient" aria-hidden="true"></div>
 
     <div class="controls">
         <div class="header-row">
@@ -306,12 +378,12 @@
                 <h1>Aura Glow</h1>
                 <div class="hero-copy"><strong>For Your AI Apps UI</strong> with ambient motion, subtle depth, and an instantly shareable static preview.</div>
             </div>
-            <div class="theme-container" onclick="toggleTheme()">
+            <button id="theme-toggle" class="theme-container" type="button" aria-pressed="false" onclick="toggleTheme()">
                 <span id="theme-text">Light Mode</span>
-            </div>
+            </button>
         </div>
 
-        <span class="section-label">Aura Selection</span>
+        <span class="section-label" id="aura-selection-label">Aura Selection</span>
         <div class="button-group">
             <button id="btn-gradient" class="active" onclick="setMode('gradient')">Mixed Aura</button>
             <button id="btn-blue" onclick="setMode('blue')">Blue Aura</button>
@@ -321,25 +393,24 @@
         <div class="slider-container">
             <div class="slider-item">
                 <div class="slider-header">
-                    <span>Intensity / Size</span>
-                    <span class="slider-value" id="size-val">40px</span>
+                    <label for="size-slider">Intensity / Size</label>
+                    <output class="slider-value" id="size-val" for="size-slider">40px</output>
                 </div>
-                <input type="range" id="size-slider" min="10" max="150" value="40" oninput="updateSize(this.value)">
+                <input type="range" id="size-slider" min="10" max="150" value="40" oninput="updateSize(this.value)" aria-describedby="size-val">
             </div>
 
             <div class="slider-item">
                 <div class="slider-header">
-                    <span>Animation Speed</span>
-                    <span class="slider-value" id="speed-val">8s</span>
+                    <label for="speed-slider">Animation Speed</label>
+                    <output class="slider-value" id="speed-val" for="speed-slider">8s</output>
                 </div>
-                <input type="range" id="speed-slider" min="1" max="15" value="8" step="0.5" oninput="updateSpeed(this.value)">
+                <input type="range" id="speed-slider" min="1" max="15" value="8" step="0.5" oninput="updateSpeed(this.value)" aria-describedby="speed-val">
             </div>
         </div>
     </div>
 
     <script>
         const root = document.documentElement;
-        let currentMode = 'gradient';
         let isLight = false;
 
         function setMode(mode) {
@@ -354,27 +425,27 @@
                     btn.classList.add('active');
                 }
             });
-            currentMode = mode;
         }
 
         function updateSize(val) {
             root.style.setProperty('--glow-blur', val + 'px');
-            document.getElementById('size-val').innerText = val + 'px';
+            document.getElementById('size-val').textContent = val + 'px';
         }
 
         function updateSpeed(val) {
-            // Speed for gradient is direct, breathe effects scaled
             root.style.setProperty('--glow-speed', val + 's');
             root.style.setProperty('--blue-speed', (val / 2) + 's');
             root.style.setProperty('--pink-speed', (val / 2.5) + 's');
-            document.getElementById('speed-val').innerText = val + 's';
+            document.getElementById('speed-val').textContent = val + 's';
         }
 
         function toggleTheme() {
             isLight = !isLight;
-            document.body.classList.toggle('light-theme');
+            document.documentElement.classList.toggle('light-theme');
             const themeText = document.getElementById('theme-text');
-            themeText.innerText = isLight ? 'Dark Mode' : 'Light Mode';
+            const themeToggle = document.getElementById('theme-toggle');
+            themeText.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+            themeToggle.setAttribute('aria-pressed', String(isLight));
         }
     </script>
 </body>
